@@ -50,9 +50,9 @@ class RNN_model(nn.Module):
 
         ##########################################
         self.fc = nn.Linear(lstm_hidden_dim, vocab_len )
-        self.apply(weights_init) # call the weights initial function.
+        # self.apply(weights_init) # call the weights initial function.
 
-        self.softmax = nn.LogSoftmax() # the activation function.
+        self.softmax = F.log_softmax # the activation function.
         # self.tanh = nn.Tanh()
     def forward(self,sentence,is_test = False):
         batch_input = self.word_embedding_lookup(sentence).view(1,-1,self.word_embedding_dim)
@@ -71,7 +71,7 @@ class RNN_model(nn.Module):
 
         out =  F.relu(self.fc(out))
 
-        out = self.softmax(out)
+        out = self.softmax(out, dim=-1)
 
         if is_test:
             prediction = out[ -1, : ].view(1,-1)
